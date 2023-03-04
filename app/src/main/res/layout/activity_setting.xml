@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+    <LinearLayout
+        style="@style/setting.provider">
+        <LinearLayout
+            style="@style/setting.form">
+            <TextView
+                style="@style/setting.label"
+                android:text="@string/display_name" />
+
+            <Spinner
+                android:id="@+id/display_spinner"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:background="@drawable/spinner_border"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        </LinearLayout>
+        <TextView
+            android:text="@string/display_tips"
+            style="@style/setting.tips"/>
+    </LinearLayout>
+    <LinearLayout
+        style="@style/setting.provider">
+        <LinearLayout
+            style="@style/setting.form">
+            <TextView
+                style="@style/setting.label"
+                android:text="@string/window_name" />
+            <Spinner
+                android:id="@+id/window_function_spinner"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:background="@drawable/spinner_border"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        </LinearLayout>
+        <TextView
+            android:text="@string/window_tips"
+            style="@style/setting.tips"/>
+    </LinearLayout>
+    <LinearLayout
+        style="@style/setting.provider">
+        <LinearLayout
+            style="@style/setting.form">
+            <TextView
+                style="@style/setting.label"
+                android:text="@string/threshold_name" />
+            <EditText
+                android:id="@+id/threshold"
+                android:padding="6dp"
+                android:textSize="15sp"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="threshold_factor"
+                android:inputType="numberDecimal"
+                tools:ignore="LabelFor" />
+        </LinearLayout>
+        <TextView
+            android:text="@string/threshold_tips"
+            style="@style/setting.tips"/>
+    </LinearLayout>
+    <LinearLayout
+        style="@style/setting.provider">
+        <LinearLayout
+            style="@style/setting.form">
+            <TextView
+                style="@style/setting.label"
+                android:text="@string/fix_phase_name" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/fix_phase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <TextView
+            android:text="@string/fix_phase_tips"
+            style="@style/setting.tips"/>
+    </LinearLayout>
+
+</LinearLayout>
