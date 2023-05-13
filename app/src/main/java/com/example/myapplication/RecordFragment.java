@@ -14,7 +14,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,7 +82,7 @@ public class RecordFragment extends Fragment {
     private float thresholdFactor = RecordConstant.DEFAULT_THRESHOLD;   // 振幅的阈值因数
 
     private LineChart chart;
-    private Button recordBtn;
+    private ImageButton recordBtn;
     private TextView dBText;
     private TextView freqText;
     private TextView amplitudeText;
@@ -125,10 +126,6 @@ public class RecordFragment extends Fragment {
         amplitudeText = view.findViewById(R.id.amplitude);
         displayTypeText = view.findViewById(R.id.display);
 
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-        }
-
         SharedPreferences sharedPreferences = activity.getSharedPreferences("settings", MODE_PRIVATE);
 
         displayType = DisplayType.values()[sharedPreferences.getInt("display_type",displayType.ordinal())];
@@ -156,8 +153,6 @@ public class RecordFragment extends Fragment {
                     }
                     break;
             }
-
-
         }
 
         if(displayType == DisplayType.WAVE) {
@@ -167,10 +162,7 @@ public class RecordFragment extends Fragment {
             }
         }
 
-        initUI();
-
         view.findViewById(R.id.reset).setOnClickListener(_view -> resetChartView());
-
         recordBtn.setOnClickListener(_view -> {
             if(!recordFlag) {
                 beginRecord();
@@ -178,6 +170,10 @@ public class RecordFragment extends Fragment {
                 resetRecord();
             }
         });
+
+        initUI();
+        beginRecord();
+
         return view;
     }
 
@@ -224,6 +220,7 @@ public class RecordFragment extends Fragment {
                 // 估算振幅
                 inferAmplitude = 0;
                 double cyclePointNum = sampleRate/maxWave.frequency;
+                if(cyclePointNum>=bufferSize) cyclePointNum = bufferSize;
                 int cycleNum = (int) (bufferSize/cyclePointNum);
                 for (int i = 0; i < cycleNum; ++i) {
                     int begin = (int) (i*cyclePointNum);
@@ -263,7 +260,7 @@ public class RecordFragment extends Fragment {
                 data = new ArrayList<>(curveSize);
                 float[] yData = new float[curveSize];
                 for(Wave wave : waves) {
-                    if(wave.amplitude>=maxWave.amplitude* thresholdFactor) {
+                    if(wave.amplitude>=maxWave.amplitude * thresholdFactor) {
                         for (int i = 0; i < curveSize; i++) {
                             yData[i]+=wave.cal(i*step);
                         }
@@ -292,6 +289,7 @@ public class RecordFragment extends Fragment {
     }
 
     private void initUI() {
+        chart.setViewPortOffsets(50, 10, 50, 50);
         displayTypeText.setText(RecordConstant.DISPLAY_NAMES[displayType.ordinal()]);
         final YAxis yAxis = chart.getAxisLeft();
         final XAxis xAxis = chart.getXAxis();
@@ -302,6 +300,7 @@ public class RecordFragment extends Fragment {
         chart.setDrawBorders(true);
         xAxis.setDrawLabels(true);
         xAxis.setAxisMinimum(0);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         switch (displayType) {
             case FFT:
                 xAxis.setValueFormatter((value, axis) -> String.format(Locale.CHINA,"%.0fHz",value));
@@ -332,13 +331,19 @@ public class RecordFragment extends Fragment {
 
     private void beginRecord() {
         recordFlag = true;
-        recordBtn.setText("停止");
+        // 取消原有的十字线
+        chart.highlightValue(null);
+        // 禁用触摸的十字线
+        chart.setHighlightPerTapEnabled(false);
+        recordBtn.setImageResource(R.drawable.ic_baseline_pause_24);
         readSound();
     }
 
     private void resetRecord() {
         recordFlag = false;
-        recordBtn.setText("开始");
+        // 启用触摸的十字线
+        chart.setHighlightPerTapEnabled(true);
+        recordBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24);
     }
 
     private static int getMinSize(int size) {

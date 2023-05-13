@@ -1,20 +1,17 @@
 <resources>
     <string name="app_name">声音信号示波器</string>
     <string name="db">dB</string>
-    <string name="db_name">音量：</string>
     <string name="khz">kHz</string>
-    <string name="freq_name">频率：</string>
-    <string name="record_name">开始</string>
     <string name="menu_item_setting">设置</string>
     <string name="menu_item_record">示波器</string>
     <string name="window_name">窗函数：</string>
-    <string name="reset_name">重置缩放</string>
     <string name="threshold_name">阈值因数：</string>
-    <string name="amplitude_name">振幅估值：</string>
     <string name="display_name">显示模式：</string>
     <string name="window_tips">* FFT所用的窗函数，仅对频谱图模式有效</string>
     <string name="threshold_tips">* 频域中振幅与最大振幅的比值小于阈值的波将会被忽略，仅对合成波形模式有效</string>
     <string name="display_tips">* 设置信号在图表中显示的模式</string>
     <string name="fix_phase_name">固定相位：</string>
     <string name="fix_phase_tips">* 固定频域中最大振幅频率波的相位，仅对合成波形模式有效</string>
+    <string name="resetDescription">重置缩放</string>
+    <string name="recordDescription">开始/暂停</string>
 </resources>
