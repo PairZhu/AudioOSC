@@ -274,34 +274,7 @@ public class RecordFragment extends Fragment
                     complex = complex.multiply(new Complex(Math.cos(deltaPhase), Math.sin(deltaPhase)));
                     originData[2*i] = complex.getReal();
                     originData[2*i+1] = complex.getImaginary();
-                    // 判断是否是NaN
-                    if (Double.isNaN(deltaPhase)) {
-                        System.out.println("Freq deltaPhase");
-                    }
                 }
-
-                // // 计算最大振幅波的相位（忽略零频率）
-                // int maxIndex = 1;
-                // double maxValue = 0;
-                // for (int i = 1; i < bufferSize / 2; ++i)
-                // {
-                //     double value = originData[2*i] * originData[2*i] + originData[2*i + 1] * originData[2*i + 1];
-                //     if (value > maxValue)
-                //     {
-                //         maxValue = value;
-                //         maxIndex = i;
-                //     }
-                // }
-                // // 平移x轴，使得最大振幅波的相位固定
-                // final double maxPhase = Math.atan2(originData[2 * maxIndex + 1], originData[2 * maxIndex]);
-                // for (int i = 1; i < bufferSize / 2; ++i)
-                // {
-                //     Complex complex = new Complex(originData[2 * i], originData[2 * i + 1]);
-                //     double deltaPhase = -i * maxPhase / maxIndex;
-                //     complex = complex.multiply(new Complex(Math.cos(deltaPhase), Math.sin(deltaPhase)));
-                //     originData[2 * i] = complex.getReal();
-                //     originData[2 * i + 1] = complex.getImaginary();
-                // }
             }
 
             // 计算有多少个周期
@@ -321,26 +294,6 @@ public class RecordFragment extends Fragment
             {
                 data.add(new Entry((float)(i * step), (float)ifftData[i % ifftSize]));
             }
-
-            // for (int i = 0; i < curveSize; i++) {
-            //     data.add(new Entry((float) (i * step), (float) ifftData[i]));
-            // }
-
-            //!!!
-            // final int curveSize = 500;
-            // final double step = showCyclesNum / maxWave.frequency / curveSize;
-            // data = new ArrayList<>(curveSize);
-            // float[] yData = new float[curveSize];
-            // for(Wave wave : waves) {
-            //     if(wave.amplitude>=maxWave.amplitude * thresholdFactor) {
-            //         for (int i = 0; i < curveSize; i++) {
-            //             yData[i]+=wave.cal(i*step);
-            //         }
-            //     }
-            // }
-            // for (int i = 0; i < curveSize; i++) {
-            //     data.add(new Entry((float) (i * step), yData[i]));
-            // }
             break;
         case ORIGIN:
             data = new ArrayList<>(bufferSize);
