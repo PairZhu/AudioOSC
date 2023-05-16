@@ -6,14 +6,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -68,32 +65,6 @@ public class SettingFragment extends Fragment {
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-
-        final EditText thresholdInput = view.findViewById(R.id.threshold);
-        thresholdInput.setText(String.valueOf(sharedPreferences.getFloat("threshold_factor", RecordConstant.DEFAULT_THRESHOLD)));
-        thresholdInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(Editable s) {
-                try {
-                    float value = Float.parseFloat(s.toString());
-                    if (value > 1f) {
-                        thresholdInput.setText("1");
-                        thresholdInput.setSelection(1);
-                    } else {
-                        editor.putFloat("threshold_factor", value);
-                        editor.apply();
-                    }
-                } catch (NumberFormatException e) {
-                    // 输入的不是数字
-                    thresholdInput.setText("0");
-                    thresholdInput.setSelection(1);
-                }
             }
         });
 

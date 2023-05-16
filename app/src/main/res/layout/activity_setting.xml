@@ -48,27 +48,6 @@
             style="@style/setting.form">
             <TextView
                 style="@style/setting.label"
-                android:text="@string/threshold_name" />
-            <EditText
-                android:id="@+id/threshold"
-                android:padding="6dp"
-                android:textSize="15sp"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:autofillHints="threshold_factor"
-                android:inputType="numberDecimal"
-                tools:ignore="LabelFor" />
-        </LinearLayout>
-        <TextView
-            android:text="@string/threshold_tips"
-            style="@style/setting.tips"/>
-    </LinearLayout>
-    <LinearLayout
-        style="@style/setting.provider">
-        <LinearLayout
-            style="@style/setting.form">
-            <TextView
-                style="@style/setting.label"
                 android:text="@string/fix_phase_name" />
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/fix_phase"
