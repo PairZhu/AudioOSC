@@ -236,7 +236,7 @@ public class RecordFragment extends Fragment {
                 volume = calculateVolume(buffer);
                 updateUI();
             }
-        }, 0, 100); // 每 100 毫秒执行一次
+        }, 0, 20); // 每 20 毫秒执行一次
     }
 
     private void updateUI() {
