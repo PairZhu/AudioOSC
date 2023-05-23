@@ -14,4 +14,7 @@
     <string name="fix_phase_tips">* 固定频域中最大振幅频率波的相位，仅对合成波形模式有效</string>
     <string name="resetDescription">重置缩放</string>
     <string name="recordDescription">开始/暂停</string>
+    <string name="hz">Hz</string>
+    <string name="manual_freq_name">手动频率</string>
+    <string name="manual_freq_tips">* 手动调整示波频率，仅对合成波形模式有效</string>
 </resources>

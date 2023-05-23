@@ -75,6 +75,13 @@ public class SettingFragment extends Fragment {
             editor.apply();
         });
 
+        final SwitchMaterial manualFreqSwitch = view.findViewById(R.id.manual_freq);
+        manualFreqSwitch.setChecked(sharedPreferences.getBoolean("manual_freq", RecordConstant.DEFAULT_MANUAL_FREQ));
+        manualFreqSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            editor.putBoolean("manual_freq", isChecked);
+            editor.apply();
+        });
+
         return view;
     }
 }

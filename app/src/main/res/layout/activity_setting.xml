@@ -58,5 +58,21 @@
             android:text="@string/fix_phase_tips"
             style="@style/setting.tips"/>
     </LinearLayout>
+    <LinearLayout
+        style="@style/setting.provider">
+        <LinearLayout
+            style="@style/setting.form">
+            <TextView
+                style="@style/setting.label"
+                android:text="@string/manual_freq_name" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/manual_freq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <TextView
+            android:text="@string/manual_freq_tips"
+            style="@style/setting.tips"/>
+    </LinearLayout>
 
 </LinearLayout>

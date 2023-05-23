@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="SeekWithEdit">
+        <attr name="minValue" format="integer" />
+        <attr name="maxValue" format="integer" />
+    </declare-styleable>
+</resources>

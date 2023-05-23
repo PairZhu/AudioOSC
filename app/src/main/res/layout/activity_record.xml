@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical">
     <LinearLayout
@@ -90,4 +91,24 @@
                 tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>
     </FrameLayout>
+    <!-- 使用滑动选择器手动设置频率 -->
+    <LinearLayout
+        android:id="@+id/osc_freq_container"
+        android:visibility="gone"
+        android:paddingHorizontal="10dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <com.example.myapplication.SeekWithEdit
+            app:minValue="10"
+            android:id="@+id/osc_freq"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="@string/hz"/>
+    </LinearLayout>
 </LinearLayout>

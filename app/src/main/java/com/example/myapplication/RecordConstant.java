@@ -6,4 +6,5 @@ public class RecordConstant {
     public static final boolean DEFAULT_FIX_PHASE = true;
     public static final String[] DISPLAY_NAMES = {"频谱图","合成波形","原始数据"};
     public static final String[] WINDOW_NAMES = {"矩形窗", "汉宁窗", "海明窗", "布莱克曼窗"};
+    public static final boolean DEFAULT_MANUAL_FREQ = false;
 }
