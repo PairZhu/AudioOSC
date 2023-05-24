@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="50dp"
             android:layout_marginTop="5dp"
-            android:alpha="0.5"
+            android:alpha="0.52"
             android:gravity="center_horizontal">
             <ImageButton
                 android:id="@+id/reset"
@@ -94,7 +94,6 @@
     <!-- 使用滑动选择器手动设置频率 -->
     <LinearLayout
         android:id="@+id/osc_freq_container"
-        android:visibility="gone"
         android:paddingHorizontal="10dp"
         android:gravity="center"
         android:layout_height="wrap_content"

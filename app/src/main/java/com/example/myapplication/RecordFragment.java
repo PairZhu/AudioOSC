@@ -54,9 +54,11 @@ public class RecordFragment extends Fragment {
     private final int bufferSize = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT); // 采样点数
     private final int fftSize = getMinSize(bufferSize) * 2;                                                                               // FFT计算的点数
 
-    private DisplayType displayType = DisplayType.FFT;           // 图标展示方式
-    private boolean fixPhase = RecordConstant.DEFAULT_FIX_PHASE; // 是否固定相位
-    private boolean manualFreq = RecordConstant.DEFAULT_MANUAL_FREQ; // 是否手动输入频率
+    private DisplayType displayType;           // 图标展示方式
+    private boolean fixPhase; // 是否固定相位
+    private boolean manualFreq; // 是否手动输入频率
+    private float highPass;   // 高通滤波频率
+    private float lowPass;     // 低通滤波频率
 
     private LineChart chart;
     private ImageButton recordBtn;
@@ -109,12 +111,8 @@ public class RecordFragment extends Fragment {
 
         SharedPreferences sharedPreferences = activity.getSharedPreferences("settings", MODE_PRIVATE);
 
-        displayType = DisplayType.values()[sharedPreferences.getInt("display_type", displayType.ordinal())];
-        manualFreq = sharedPreferences.getBoolean("manual_freq", manualFreq);
-        if (manualFreq) {
-            view.findViewById(R.id.osc_freq_container).setVisibility(View.VISIBLE);
-        }
-        fixPhase = sharedPreferences.getBoolean("fix_phase", fixPhase);
+        displayType = DisplayType.values()[sharedPreferences.getInt("display_type", RecordConstant.DEFAULT_DISPLAY_TYPE_ID)];
+        fixPhase = sharedPreferences.getBoolean("fix_phase", RecordConstant.DEFAULT_FIX_PHASE);
         if (displayType == DisplayType.FFT) {
             // 窗函数打表
             switch (sharedPreferences.getInt("window_id", RecordConstant.DEFAULT_WINDOW_ID)) {
@@ -138,6 +136,12 @@ public class RecordFragment extends Fragment {
                     break;
             }
         }
+        manualFreq = sharedPreferences.getBoolean("manual_freq", RecordConstant.DEFAULT_MANUAL_FREQ);
+        if (!manualFreq || displayType != DisplayType.WAVE) {
+            view.findViewById(R.id.osc_freq_container).setVisibility(View.GONE);
+        }
+        highPass = sharedPreferences.getFloat("high_pass", RecordConstant.DEFAULT_HIGH_PASS);
+        lowPass = sharedPreferences.getFloat("low_pass", RecordConstant.DEFAULT_LOW_PASS);
 
         // 设置手动输入频率的范围
         // 根据采样率和采样点数，计算最小频率和最大频率
@@ -172,8 +176,6 @@ public class RecordFragment extends Fragment {
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
         audioRecord.startRecording();
         final double[] timeDomainData = new double[fftSize];
-        // 先读取一次，等待系统缓冲区生成足够多的数据
-        audioRecord.read(buffer, 0, bufferSize);
         // 不断从麦克风采样声音数据
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -181,6 +183,7 @@ public class RecordFragment extends Fragment {
                 if (!recordFlag) {
                     audioRecord.stop();
                     audioRecord.setRecordPositionUpdateListener(null);
+                    audioRecord.release();
                     audioRecord = null;
                     cancel();
                     return;
@@ -197,6 +200,23 @@ public class RecordFragment extends Fragment {
                 fft.realForward(fftData);
                 // 零频率的复数部分为0，原算法用于存最大负频率的实部
                 fftData[1] = 0;
+                // 高通滤波
+                if (highPass >= 0f) {
+                    final int highPassIndex = (int) Math.ceil(highPass * fftSize / (double) sampleRate);
+                    for (int i = 0; i < highPassIndex && i < fftSize / 2; ++i) {
+                        fftData[2 * i] = 0;
+                        fftData[2 * i + 1] = 0;
+                    }
+                }
+                // 低通滤波
+                if (lowPass >= 0f) {
+                    final int lowPassIndex = (int) (lowPass * fftSize / (double) sampleRate);
+                    for (int i = lowPassIndex + 1; i < fftSize / 2; ++i) {
+                        fftData[2 * i] = 0;
+                        fftData[2 * i + 1] = 0;
+                    }
+                }
+
                 // 忽略零频率，计算最大振幅对应的下标
                 int waveIndex = 1;
                 double maxValue = 0;
@@ -209,7 +229,7 @@ public class RecordFragment extends Fragment {
                 }
                 maxAmpFreq = waveIndex * sampleRate / (double) fftSize;
                 if (manualFreq) {
-                    waveIndex = (int)(oscFreqView.getValue() * fftSize / (double)sampleRate);
+                    waveIndex = (int) (oscFreqView.getValue() * fftSize / (double) sampleRate);
                 }
                 frequency = waveIndex * sampleRate / (double) fftSize;
                 phase = Math.atan2(fftData[2 * waveIndex + 1], fftData[2 * waveIndex]);
@@ -242,7 +262,7 @@ public class RecordFragment extends Fragment {
     private void updateUI() {
         List<Entry> data = new ArrayList<>();
         switch (displayType) {
-            case FFT:
+            case FFT: {
                 data = new ArrayList<>(fftSize / 2);
                 for (int i = 0; i < fftSize / 2; ++i) {
                     double amplitude = Math.sqrt(fftData[2 * i] * fftData[2 * i] + fftData[2 * i + 1] * fftData[2 * i + 1]) / bufferSize;
@@ -250,7 +270,8 @@ public class RecordFragment extends Fragment {
                     data.add(new Entry((float) frequency, (float) amplitude));
                 }
                 break;
-            case WAVE:
+            }
+            case WAVE: {
                 // 不补零，原地fft
                 final DoubleFFT_1D fft = new DoubleFFT_1D(bufferSize);
                 final double[] originData = new double[bufferSize];
@@ -259,6 +280,23 @@ public class RecordFragment extends Fragment {
                 }
                 fft.realForward(originData);
                 originData[1] = 0;
+
+                // 高通滤波
+                if (highPass >= 0f) {
+                    final int highPassIndex = (int) Math.ceil(highPass * bufferSize / (double) sampleRate);
+                    for (int i = 0; i < highPassIndex && i < bufferSize / 2; ++i) {
+                        originData[2 * i] = 0;
+                        originData[2 * i + 1] = 0;
+                    }
+                }
+                // 低通滤波
+                if (lowPass >= 0f) {
+                    final int lowPassIndex = (int) (lowPass * bufferSize / (double) sampleRate);
+                    for (int i = lowPassIndex + 1; i < bufferSize / 2; ++i) {
+                        originData[2 * i] = 0;
+                        originData[2 * i + 1] = 0;
+                    }
+                }
 
                 // 固定相位
                 if (fixPhase && frequency > 0) {
@@ -290,12 +328,52 @@ public class RecordFragment extends Fragment {
                     data.add(new Entry((float) (i * step), (float) ifftData[i % ifftSize]));
                 }
                 break;
-            case ORIGIN:
+            }
+            case ORIGIN: {
                 data = new ArrayList<>(bufferSize);
-                for (int i = 0; i < bufferSize; i++) {
-                    data.add(new Entry((float) i / sampleRate, buffer[i]));
+                if (lowPass >= 0f || highPass >= 0f) {
+                    final double[] originData = new double[bufferSize];
+                    for (int i = 0; i < bufferSize; i++) {
+                        originData[i] = buffer[i];
+                    }
+                    final DoubleFFT_1D fft = new DoubleFFT_1D(bufferSize);
+                    fft.realForward(originData);
+                    // 这个fft算法结果的第二个元素有特殊含义，不是复数的虚部，此处进行特判
+                    final double tmp = originData[1];
+                    // 高通滤波
+                    if (highPass >= 0f) {
+                        final int highPassIndex = (int) Math.ceil(highPass * bufferSize / (double) sampleRate);
+                        for (int i = 0; i < highPassIndex && i < bufferSize / 2; ++i) {
+                            originData[2 * i] = 0;
+                            originData[2 * i + 1] = 0;
+                        }
+                    }
+                    // 低通滤波
+                    if (lowPass >= 0f) {
+                        final int lowPassIndex = (int) (lowPass * bufferSize / (double) sampleRate);
+                        for (int i = lowPassIndex + 1; i < bufferSize / 2; ++i) {
+                            originData[2 * i] = 0;
+                            originData[2 * i + 1] = 0;
+                        }
+                        if (lowPassIndex >= bufferSize / 2) {
+                            originData[1] = tmp;
+                        }
+                    }
+
+                    final DoubleFFT_1D ifft = new DoubleFFT_1D(bufferSize);
+                    ifft.realInverse(originData, true);
+
+                    for (int i = 0; i < bufferSize; i++) {
+                        data.add(new Entry((float) i / sampleRate, (float) originData[i]));
+                    }
+
+                } else {
+                    for (int i = 0; i < bufferSize; i++) {
+                        data.add(new Entry((float) i / sampleRate, buffer[i]));
+                    }
                 }
                 break;
+            }
         }
         dataSet.setValues(data);
         LineData lineData = new LineData(dataSet);

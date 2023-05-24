@@ -31,7 +31,7 @@
         <item name="android:layout_width">80dp</item>
     </style>
     <style name="setting.tips">
-        <item name="android:textColor">#7f000000</item>
+        <item name="android:textColor">#757575</item>
         <item name="android:textSize">10sp</item>
     </style>
 </resources>

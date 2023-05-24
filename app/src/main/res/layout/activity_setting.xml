@@ -49,10 +49,12 @@
             <TextView
                 style="@style/setting.label"
                 android:text="@string/fix_phase_name" />
+
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/fix_phase"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
         </LinearLayout>
         <TextView
             android:text="@string/fix_phase_tips"
@@ -65,14 +67,67 @@
             <TextView
                 style="@style/setting.label"
                 android:text="@string/manual_freq_name" />
+
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/manual_freq"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>
         <TextView
             android:text="@string/manual_freq_tips"
             style="@style/setting.tips"/>
     </LinearLayout>
+    <LinearLayout
+        style="@style/setting.provider">
+        <LinearLayout
+            style="@style/setting.form">
+            <TextView
+                style="@style/setting.label"
+                android:text="@string/high_pass_name" />
 
+            <EditText
+                android:id="@+id/high_pass"
+                android:imeOptions="actionDone"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="threshold_factor"
+                android:inputType="numberDecimal|numberSigned"
+                android:padding="6dp"
+                android:textSize="15sp"
+                tools:ignore="LabelFor,TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+            <TextView
+                android:text="@string/hz"
+                style="@style/setting.label"/>
+        </LinearLayout>
+        <TextView
+            android:text="@string/high_pass_tips"
+            style="@style/setting.tips"/>
+    </LinearLayout>
+    <LinearLayout
+        style="@style/setting.provider">
+        <LinearLayout
+            style="@style/setting.form">
+            <TextView
+                style="@style/setting.label"
+                android:text="@string/low_pass_name" />
+
+            <EditText
+                android:id="@+id/low_pass"
+                android:imeOptions="actionDone"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal|numberSigned"
+                android:padding="6dp"
+                android:textSize="15sp"
+                tools:ignore="LabelFor,TouchTargetSizeCheck,SpeakableTextPresentCheck"
+                android:importantForAutofill="no" />
+            <TextView
+                android:text="@string/hz"
+                style="@style/setting.label"/>
+        </LinearLayout>
+        <TextView
+            android:text="@string/low_pass_tips"
+            style="@style/setting.tips"/>
+    </LinearLayout>
 </LinearLayout>

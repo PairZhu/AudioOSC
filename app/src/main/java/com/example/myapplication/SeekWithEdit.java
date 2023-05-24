@@ -77,8 +77,8 @@ public class SeekWithEdit extends LinearLayout {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    // 输入框失去焦点，视为输入完成
-                    setValue(Integer.parseInt(editText.getText().toString()));
+                    // 输入框失去焦点，将输入框的值设置恢复为滑动条
+                    editText.setText(String.valueOf(seekBar.getProgress()));
                 }
             }
         });
@@ -138,5 +138,35 @@ public class SeekWithEdit extends LinearLayout {
         if (seekBar.getProgress() > maxValue) {
             setValue(maxValue);
         }
+    }
+
+    // 提供公共方法设置值改变监听器
+    public void setOnValueChangedListener(SeekBar.OnSeekBarChangeListener listener) {
+        seekBar.setOnSeekBarChangeListener(listener);
+    }
+
+    // 提供公共方法设置文本改变监听器
+    public void setOnTextChangedListener(TextWatcher watcher) {
+        editText.addTextChangedListener(watcher);
+    }
+
+    // 提供公共方法获取最小值
+    public int getMinValue() {
+        return minValue;
+    }
+
+    // 提供公共方法获取最大值
+    public int getMaxValue() {
+        return maxValue;
+    }
+
+    // 提供公共方法获取数字输入框
+    public EditText getEditText() {
+        return editText;
+    }
+
+    // 提供公共方法获取滑动条
+    public SeekBar getSeekBar() {
+        return seekBar;
     }
 }

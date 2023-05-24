@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -81,6 +83,43 @@ public class SettingFragment extends Fragment {
             editor.putBoolean("manual_freq", isChecked);
             editor.apply();
         });
+
+        // 高通滤波
+        final EditText highPassEditText = view.findViewById(R.id.high_pass);
+        highPassEditText.setText(String.valueOf(sharedPreferences.getFloat("high_pass", RecordConstant.DEFAULT_HIGH_PASS)));
+        highPassEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                float highPass = Float.parseFloat(highPassEditText.getText().toString());
+                editor.putFloat("high_pass", highPass);
+                editor.apply();
+            }
+            return false;
+        });
+        highPassEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                highPassEditText.setText(String.valueOf(sharedPreferences.getFloat("high_pass", RecordConstant.DEFAULT_HIGH_PASS)));
+            }
+        });
+
+        // 低通滤波
+        final EditText lowPassEditText = view.findViewById(R.id.low_pass);
+        lowPassEditText.setText(String.valueOf(sharedPreferences.getFloat("low_pass", RecordConstant.DEFAULT_LOW_PASS)));
+        lowPassEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                float lowPass = Float.parseFloat(lowPassEditText.getText().toString());
+                editor.putFloat("low_pass", lowPass);
+                editor.apply();
+            }
+            return false;
+        });
+        lowPassEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                lowPassEditText.setText(String.valueOf(sharedPreferences.getFloat("low_pass", RecordConstant.DEFAULT_LOW_PASS)));
+            }
+        });
+        
+
+
 
         return view;
     }
