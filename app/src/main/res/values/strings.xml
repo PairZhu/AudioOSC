@@ -21,4 +21,8 @@
     <string name="low_pass_name">低通滤波：</string>
     <string name="high_pass_tips">* 高通滤波器阈值系数，负数表示不滤波</string>
     <string name="low_pass_tips">* 低通滤波器阈值系数，负数表示不滤波</string>
+    <string name="playDescription">播放/暂停</string>
+    <string name="volume">volume</string>
+    <string name="osc">示波器</string>
+    <string name="sg">信号发生器</string>
 </resources>

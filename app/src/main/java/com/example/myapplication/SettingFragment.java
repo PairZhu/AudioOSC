@@ -46,8 +46,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View _view, int position, long id) {
                 // 将数据存储到 SharedPreferences 中
-                editor.putInt("display_type", position);
-                editor.apply();
+                editor.putInt("display_type", position).apply();
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -62,8 +61,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View _view, int position, long id) {
                 // 将数据存储到 SharedPreferences 中
-                editor.putInt("window_id", position);
-                editor.apply();
+                editor.putInt("window_id", position).apply();
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -72,17 +70,11 @@ public class SettingFragment extends Fragment {
 
         final SwitchMaterial fixPhaseSwitch = view.findViewById(R.id.fix_phase);
         fixPhaseSwitch.setChecked(sharedPreferences.getBoolean("fix_phase", RecordConstant.DEFAULT_FIX_PHASE));
-        fixPhaseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            editor.putBoolean("fix_phase", isChecked);
-            editor.apply();
-        });
+        fixPhaseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> editor.putBoolean("fix_phase", isChecked).apply());
 
         final SwitchMaterial manualFreqSwitch = view.findViewById(R.id.manual_freq);
         manualFreqSwitch.setChecked(sharedPreferences.getBoolean("manual_freq", RecordConstant.DEFAULT_MANUAL_FREQ));
-        manualFreqSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            editor.putBoolean("manual_freq", isChecked);
-            editor.apply();
-        });
+        manualFreqSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> editor.putBoolean("manual_freq", isChecked).apply());
 
         // 高通滤波
         final EditText highPassEditText = view.findViewById(R.id.high_pass);
@@ -90,8 +82,8 @@ public class SettingFragment extends Fragment {
         highPassEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 float highPass = Float.parseFloat(highPassEditText.getText().toString());
-                editor.putFloat("high_pass", highPass);
-                editor.apply();
+                editor.putFloat("high_pass", highPass).apply();
+                highPassEditText.setText(String.valueOf(highPass));
             }
             return false;
         });
@@ -107,8 +99,8 @@ public class SettingFragment extends Fragment {
         lowPassEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 float lowPass = Float.parseFloat(lowPassEditText.getText().toString());
-                editor.putFloat("low_pass", lowPass);
-                editor.apply();
+                editor.putFloat("low_pass", lowPass).apply();
+                lowPassEditText.setText(String.valueOf(lowPass));
             }
             return false;
         });

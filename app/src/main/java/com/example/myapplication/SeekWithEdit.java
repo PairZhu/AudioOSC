@@ -3,22 +3,26 @@ package com.example.myapplication;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.ArrayList;
+
 public class SeekWithEdit extends LinearLayout {
+
+    public interface OnValueChangedListener {
+        void onValueChanged(int value);
+    }
+
+    private final ArrayList<OnValueChangedListener> valueChangedListeners = new ArrayList<>();
+
+
 
     private SeekBar seekBar;
     private EditText editText;
@@ -62,24 +66,17 @@ public class SeekWithEdit extends LinearLayout {
         editText.setText(String.valueOf(minValue));
 
         // 设置数字输入框的文本改变监听器
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                // 用户点击了数字输入框的完成按钮或关闭软键盘时，将数字输入框的值设置到滑动条上
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                    setValue(Integer.parseInt(editText.getText().toString()));
-                    return true;
-                }
-                return false;
+        editText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            // 用户点击了数字输入框的完成按钮或关闭软键盘时，将数字输入框的值设置到滑动条上
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                setValue(Integer.parseInt(editText.getText().toString()));
             }
+            return false;
         });
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    // 输入框失去焦点，将输入框的值设置恢复为滑动条
-                    editText.setText(String.valueOf(seekBar.getProgress()));
-                }
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                // 输入框失去焦点，将输入框的值设置恢复为滑动条
+                editText.setText(String.valueOf(seekBar.getProgress()));
             }
         });
 
@@ -90,6 +87,9 @@ public class SeekWithEdit extends LinearLayout {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // 当滑动条的值改变时，将其值设置到数字输入框上
                 editText.setText(String.valueOf(progress));
+                for (OnValueChangedListener listener : valueChangedListeners) {
+                    listener.onValueChanged(progress);
+                }
             }
 
             @Override
@@ -123,6 +123,7 @@ public class SeekWithEdit extends LinearLayout {
     }
 
     // 提供公共方法设置最小值
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setMinValue(int minValue) {
         this.minValue = minValue;
         seekBar.setMin(minValue);
@@ -141,13 +142,13 @@ public class SeekWithEdit extends LinearLayout {
     }
 
     // 提供公共方法设置值改变监听器
-    public void setOnValueChangedListener(SeekBar.OnSeekBarChangeListener listener) {
-        seekBar.setOnSeekBarChangeListener(listener);
+    public void setOnValueChangedListener(OnValueChangedListener listener) {
+        valueChangedListeners.add(listener);
     }
 
-    // 提供公共方法设置文本改变监听器
-    public void setOnTextChangedListener(TextWatcher watcher) {
-        editText.addTextChangedListener(watcher);
+    // 提供公共方法移除值改变监听器
+    public void removeOnValueChangedListener(OnValueChangedListener listener) {
+        valueChangedListeners.remove(listener);
     }
 
     // 提供公共方法获取最小值

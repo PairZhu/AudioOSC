@@ -3,111 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
+    android:paddingVertical="10dp"
     android:orientation="vertical">
+    <!-- 示波器 -->
     <LinearLayout
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-        <LinearLayout
-            style="@style/record_params"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_width="0dp">
-            <TextView
-                android:id="@+id/display"
-                style="@style/record_params.label" />
-        </LinearLayout>
-        <LinearLayout
-            style="@style/record_params"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_width="0dp">
-            <TextView
-                android:id="@+id/dB"
-                style="@style/record_params.label"
-                android:layout_width="42dp" />
-            <TextView
-                android:text="@string/db"
-                style="@style/record_params.label"/>
-        </LinearLayout>
-        <LinearLayout
-            style="@style/record_params"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_width="0dp">
-            <TextView
-                android:id="@+id/freq"
-                style="@style/record_params.label"
-                android:layout_width="42dp" />
-            <TextView
-                android:text="@string/khz"
-                style="@style/record_params.label"/>
-        </LinearLayout>
-        <LinearLayout
-            style="@style/record_params"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_width="0dp">
-            <TextView
-                android:id="@+id/amplitude"
-                style="@style/record_params.label"
-                android:layout_width="80dp"/>
-        </LinearLayout>
-    </LinearLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp" />
-        <LinearLayout
-            android:id="@+id/button_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="50dp"
-            android:layout_marginTop="5dp"
-            android:alpha="0.52"
-            android:gravity="center_horizontal">
-            <ImageButton
-                android:id="@+id/reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/resetDescription"
-                android:src="@drawable/ic_baseline_refresh_24"
-                tools:ignore="TouchTargetSizeCheck" />
-
-            <ImageButton
-                android:id="@+id/record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/design_default_color_primary"
-                android:contentDescription="@string/recordDescription"
-                android:src="@drawable/ic_baseline_play_arrow_24"
-                tools:ignore="TouchTargetSizeCheck" />
-        </LinearLayout>
-    </FrameLayout>
-    <!-- 使用滑动选择器手动设置频率 -->
-    <LinearLayout
-        android:id="@+id/osc_freq_container"
-        android:paddingHorizontal="10dp"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <com.example.myapplication.SeekWithEdit
-            app:minValue="10"
-            android:id="@+id/osc_freq"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
+        android:orientation="vertical">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="@string/hz"/>
+            android:text="@string/osc"
+            android:textSize="20sp"
+            android:paddingHorizontal="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/osc_fragment"
+            android:name="com.example.myapplication.OSCFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/activity_osc" />
+    </LinearLayout>
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginVertical="10dp"
+        android:layout_height="1dp"
+        android:background="#95a5a6" />
+    <!-- 信号发生器 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:orientation="vertical">
+        <TextView
+            android:text="@string/sg"
+            android:paddingHorizontal="20sp"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/sg_fragment"
+            android:name="com.example.myapplication.SGFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/activity_sg" />
     </LinearLayout>
 </LinearLayout>
